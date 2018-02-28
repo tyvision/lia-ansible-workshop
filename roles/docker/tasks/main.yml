@@ -1,0 +1,22 @@
+---
+# tasks file for docker
+- name: create folders
+  file: 
+    path: "{{ item }}"
+    state: directory
+    mode: 0777
+  with_items:
+    - "{{ nginx.config }}"
+    - "{{ nginx.vhost }}"
+    - "{{ nginx.html_conf }}"
+
+- name: deploy docker-compose
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ app_home }}/docker-compose.yml"
+
+- name: start docker compose
+  command: docker-compose up -d
+  args:    
+    chdir: "{{ app_home }}"
+    

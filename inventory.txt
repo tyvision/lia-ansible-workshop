@@ -1,0 +1,2 @@
+[docker]
+os3.site ansible_host=os3.site ansible_user=root ansible_port=33322

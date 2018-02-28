@@ -1,0 +1,23 @@
+---
+# vars file for docker
+letscencrypt_label: com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+app_home: /root
+app:
+  name: jupyter
+  user: root
+  host: test2.os3.site
+  port: 8888
+  ssl_mail: sne_rp2@ya.ru
+  config: /etc/nginx/conf.d/
+  vhost: /etc/nginx/vhost.d/
+  html_conf: /usr/share/nginx/html/
+  certs: /etc/nginx/certs/
+
+nginx:
+  config: /var/nginx/conf.d/
+  vhost: /var/nginx/vhost.d/
+  html_conf: /var/nginx/html/
+  certs: /etc/ssl/letsencrypt/
+  ports:
+    - 80
+    - 443

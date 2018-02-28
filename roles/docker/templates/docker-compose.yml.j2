@@ -1,0 +1,42 @@
+version: '2'
+services:
+  jenkins:
+    image: jupyter/base-notebook
+    user: {{ app.user }}
+    restart: always
+    environment:
+      - "JUPYTER_ENABLE_LAB=1"
+      - "VIRTUAL_HOST={{ app.host }}"
+      - "VIRTUAL_PORT={{ app.port }}"
+      - "LETSENCRYPT_HOST= {{ app.host }}"
+      - "LETSENCRYPT_EMAIL={{ app.ssl_mail }}"
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx_proxy
+    ports:
+{% for port in nginx.ports %}
+      - "{{ port }}:{{ port }}"
+{% endfor %}
+    volumes:
+      - "{{ nginx.config }}:{{ app.config }}"
+      - "{{ nginx.vhost }}:{{ app.vhost }}:z"
+      - "{{ nginx.html_conf }}:{{ app.html_conf }}"
+      - "{{ nginx.certs }}:{{ app.certs }}:ro"
+      - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    labels:
+      - "{{ letscencrypt_label }}=true"
+    restart: always
+
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt_nginx
+    volumes:
+      - "{{ nginx.certs }}:{{ app.certs }}:rw"
+      - "{{ nginx.vhost }}:{{ app.vhost }}:z"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    volumes_from:
+      - "nginx-proxy"
+    restart: always
+
+    
