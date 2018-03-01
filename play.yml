@@ -1,4 +1,4 @@
-- hosts: docker
+- hosts: jupyter
   gather_facts: true
   roles:
     - docker
